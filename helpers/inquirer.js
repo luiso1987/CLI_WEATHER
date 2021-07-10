@@ -95,13 +95,19 @@ const listadoLugares = async( lugares = []) => {
     return id;
 }
 
-const listaHistorial = async( historial = []) => {
-    const choices = historial.map((his, i) => {
+const listaHistorial = async( historial = {}) => {
+    const keys = [];
+    Object.keys(historial).forEach(key => {
+        keys.push(historial[key]);
+    });
+
+    let keys_5 = keys.reverse().slice(0, 5);
+    const choices = keys_5.map((k, i) => {
         const idx = `${i + 1}.`.green;
 
         return {
-            value: his,
-            name: `${idx} ${his}`
+            value: k.id,
+            name: `${idx} ${k.nombre}`
         }
     });
 

@@ -4,7 +4,7 @@ const axios = require('axios');
 
 
 class Busquedas {
-    historial = [];
+    historial = {};
     dbPath = './db/database.json';
 
     constructor() {
@@ -79,21 +79,13 @@ class Busquedas {
         }
     }
 
-    agregarHistorial(lugar = '') {
-        if(this.historial.includes(lugar.toLocaleLowerCase())) {
-            return;
-        }
-
-        this.historial = this.historial.splice(0, 4)
-        this.historial.unshift(lugar.toLocaleLowerCase());
+    agregarHistorial(lugar = {}) {
+        this.historial[lugar.id] = lugar;
         this.guardarBD();
     }
 
     guardarBD() {
-        const payload = {
-            historial: this.historial
-        };
-        fs.writeFileSync(this.dbPath, JSON.stringify(payload));
+        fs.writeFileSync(this.dbPath, JSON.stringify(this.historial));
     }
 
     leerBD() {
@@ -103,7 +95,19 @@ class Busquedas {
         const info = fs.readFileSync(this.dbPath, {encoding: 'utf-8'});
         const data = JSON.parse(info);
 
-        this.historial = data.historial;
+        this.historial = data;
+    }
+
+    mostrarDatos(lugar, clima) {
+        console.clear();
+        console.log('\nInformación de la ciudad\n'.green);
+        console.log('Ciudad:', lugar.nombre.green);
+        console.log('Latitud:', lugar.lat);
+        console.log('Longitud:', lugar.lng);
+        console.log('Temperatura:', clima.temp);
+        console.log('Mínima:', clima.min);
+        console.log('Máxima:', clima.max);
+        console.log('Como está el clima:', clima.descripcion.green);
     }
 }
 
